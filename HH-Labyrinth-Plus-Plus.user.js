@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Labyrinth++
-// @version      0.1
+// @version      0.2
 // @description  Upgrade Labyrinth with various features
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/labyrinth.html*
@@ -167,7 +167,7 @@
         let btn = document.createElement('button');
         btn.setAttribute('class', 'square_blue_btn');
         btn.setAttribute('style', 'float: right; margin-right: 10px;');
-        btn.innerHTML = '<span class="search_open_icn" style="background-image: url(https://hh2.hh-content.com/caracs/deff_undefined.png)"></span>';
+        btn.innerHTML = '<span class="search_open_icn" style="background-image: url(https://hh2.hh-content.com/pictures/misc/items_icons/1.png)"></span>';
         btn.addEventListener("click", () => {
             document.querySelector('div.select-group.girl-class-filter div.selectric-items ul li[data-index="2"]').click();
         });
@@ -175,8 +175,17 @@
 
         btn = document.createElement('button');
         btn.setAttribute('class', 'square_blue_btn');
+        btn.setAttribute('style', 'float: right; margin-right: 10px;');
+        btn.innerHTML = '<span class="search_open_icn" style="background-image: url(https://hh2.hh-content.com/pictures/misc/items_icons/2.png)"></span>';
+        btn.addEventListener("click", () => {
+            document.querySelector('div.select-group.girl-class-filter div.selectric-items ul li[data-index="1"]').click();
+        });
+        searchBtn.after(btn);
+
+        btn = document.createElement('button');
+        btn.setAttribute('class', 'square_blue_btn');
         btn.setAttribute('style', 'float: right;');
-        btn.innerHTML = '<span class="search_open_icn" style="background-image: url(https://hh2.hh-content.com/caracs/damage.png)"></span>';
+        btn.innerHTML = '<span class="search_open_icn" style="background-image: url(https://hh2.hh-content.com/pictures/misc/items_icons/3.png)"></span>';
         btn.addEventListener("click", () => {
             document.querySelector('div.select-group.girl-class-filter div.selectric-items ul li[data-index="3"]').click();
         });
