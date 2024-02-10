@@ -33,6 +33,7 @@
 
 (function() {
     'use strict';
+    /*global Hero,GT,opponent_fighter,hero_fighter,hero_page_popup,loadingAnimation,hh_ajax,Reward,HHPopupManager,objectivePopup,$*/
 
     //css
     switch(window.location.pathname)
