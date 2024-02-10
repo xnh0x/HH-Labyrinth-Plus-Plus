@@ -154,9 +154,11 @@
 
                     loadingAnimation.stop();
                     Reward.handlePopup(data.rewards);
-                    data.rewards.objective_points = data.objective_points;
-                    objectivePopup.show(data.rewards);
                     Hero.updates(data.hero_changes);
+                    if(data.objective_points) {
+                        data.rewards.objective_points = data.objective_points;
+                        objectivePopup.show(data.rewards);
+                    }
                 })
             }});
         }
