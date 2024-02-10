@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Labyrinth++
-// @version      0.2
+// @version      0.3
 // @description  Upgrade Labyrinth with various features
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/labyrinth.html*
@@ -154,6 +154,8 @@
 
                     loadingAnimation.stop();
                     Reward.handlePopup(data.rewards);
+                    data.rewards.objective_points = data.objective_points;
+                    objectivePopup.show(data.rewards);
                     Hero.updates(data.hero_changes);
                 })
             }});
