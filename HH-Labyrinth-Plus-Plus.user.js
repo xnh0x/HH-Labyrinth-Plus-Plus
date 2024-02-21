@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Labyrinth++
-// @version      0.3
+// @version      0.4
 // @description  Upgrade Labyrinth with various features
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/labyrinth.html*
@@ -35,12 +35,15 @@
     'use strict';
     /*global Hero,GT,opponent_fighter,hero_fighter,hero_page_popup,loadingAnimation,hh_ajax,Reward,HHPopupManager,objectivePopup,$*/
 
+    const LS_KEY = 'HHLabyrinthPlusPlus_Config';
+
     //css
     switch(window.location.pathname)
     {
         case '/labyrinth.html': Labyrinth_css(); break;
         case '/labyrinth-pre-battle.html': PreBattle_css(); break;
         case '/labyrinth-battle.html': Battle_css(); break;
+        case '/edit-labyrinth-team.html': EditTeam_css(); break;
     }
 
     if(document.readyState === 'complete') {
@@ -53,9 +56,9 @@
     {
         switch(window.location.pathname)
         {
-            case '/labyrinth.html': setTimeout(Labyrinth, 1); break;
-            case '/labyrinth-pre-battle.html': setTimeout(PreBattle, 1); break;
-            case '/edit-labyrinth-team.html': EditTeam(); break;
+            case '/labyrinth.html': setTimeout(Labyrinth_run, 1); break;
+            case '/labyrinth-pre-battle.html': setTimeout(PreBattle_run, 1); break;
+            case '/edit-labyrinth-team.html': EditTeam_run(); break;
         }
     }
 
@@ -68,7 +71,7 @@
         css.sheet.insertRule('#perform_opponent {display: none}');
     }
 
-    function PreBattle()
+    function PreBattle_run()
     {
         //remove event listeners from middle container
         let container = document.querySelector('div.middle-container');
@@ -165,36 +168,64 @@
         }
     }
 
-    function EditTeam()
+    function EditTeam_css()
     {
-        let searchBtn = document.querySelector('#filter_girls');
+        let css = document.createElement('style');
+        document.head.appendChild(css);
 
-        let btn = document.createElement('button');
-        btn.setAttribute('class', 'square_blue_btn');
-        btn.setAttribute('style', 'float: right; margin-right: 10px;');
-        btn.innerHTML = '<span class="search_open_icn" style="background-image: url(https://hh2.hh-content.com/pictures/misc/items_icons/1.png)"></span>';
-        btn.addEventListener("click", () => {
-            document.querySelector('div.select-group.girl-class-filter div.selectric-items ul li[data-index="2"]').click();
-        });
-        searchBtn.after(btn);
+        css.sheet.insertRule('.change-team-panel button.pressedDown {box-shadow: none;}');
+    }
 
-        btn = document.createElement('button');
-        btn.setAttribute('class', 'square_blue_btn');
-        btn.setAttribute('style', 'float: right; margin-right: 10px;');
-        btn.innerHTML = '<span class="search_open_icn" style="background-image: url(https://hh2.hh-content.com/pictures/misc/items_icons/2.png)"></span>';
-        btn.addEventListener("click", () => {
-            document.querySelector('div.select-group.girl-class-filter div.selectric-items ul li[data-index="1"]').click();
-        });
-        searchBtn.after(btn);
+    function EditTeam_run()
+    {
+        const searchBtn = document.querySelector('#filter_girls');
+        const btns = [createBtn(2), createBtn(1), createBtn(3)];
+        let config = loadConfigFromLocalStorage();
+        if(config.lastFilter !== 0) {
+            setTimeout(() => { btns[indexToArrayIndex(config.lastFilter)].click(); }, 1);
+        }
 
-        btn = document.createElement('button');
-        btn.setAttribute('class', 'square_blue_btn');
-        btn.setAttribute('style', 'float: right;');
-        btn.innerHTML = '<span class="search_open_icn" style="background-image: url(https://hh2.hh-content.com/pictures/misc/items_icons/3.png)"></span>';
-        btn.addEventListener("click", () => {
-            document.querySelector('div.select-group.girl-class-filter div.selectric-items ul li[data-index="3"]').click();
-        });
-        searchBtn.after(btn);
+        function indexToArrayIndex(index)
+        {
+            switch(index)
+            {
+                case 1: return 1;
+                case 2: return 0;
+                case 3: return 2;
+            }
+            return -1;
+        }
+
+        function createBtn(index)
+        {
+            let png = indexToArrayIndex(index) + 1;
+            let style = (png === 3 ? 'float: right;' : 'float: right; margin-right: 10px;');
+
+            let btn = document.createElement('button');
+            btn.setAttribute('class', 'square_blue_btn');
+            btn.setAttribute('style', style);
+            btn.innerHTML = '<span class="search_open_icn" style="background-image: url(https://hh2.hh-content.com/pictures/misc/items_icons/' + png + '.png)"></span>';
+            btn.addEventListener("click", () => {
+                btnClicked(btn, index);
+            });
+            searchBtn.after(btn);
+
+            return btn;
+        }
+
+        function btnClicked(btn, index)
+        {
+            if(btn.classList.contains('pressedDown')) {
+                btn.classList.remove('pressedDown');
+                index = 0;
+            } else {
+                btns.forEach((e) => e.classList.remove('pressedDown'));
+                btn.classList.add('pressedDown');
+            }
+            document.querySelector('div.select-group.girl-class-filter div.selectric-items ul li[data-index="' + index + '"]').click();
+            config.lastFilter = index;
+            saveConfigToLocalStorage(config);
+        }
     }
 
     function Battle_css()
@@ -221,7 +252,7 @@
         css.sheet.insertRule('button.blue_button_L.buy-item {display: none !important;}');
     }
 
-    function Labyrinth()
+    function Labyrinth_run()
     {
         //HH Labyrinth++ text
         let bottomSection = document.querySelector('.labyrinth-panel .labyrinth-container .bottom-section');
@@ -272,5 +303,21 @@
                 }
             }
         }).observe(document.querySelector('#shop_tab_container'), { childList:true, subtree:true });
+    }
+
+    function loadConfigFromLocalStorage()
+    {
+        let json = localStorage.getItem(LS_KEY);
+        let config = json != null ? JSON.parse(json) : { };
+
+        //default config
+        if(typeof config.lastFilter == 'undefined') config.lastFilter = 0;
+
+        return config;
+    }
+
+    function saveConfigToLocalStorage(config)
+    {
+        localStorage.setItem(LS_KEY, JSON.stringify(config));
     }
 })();
