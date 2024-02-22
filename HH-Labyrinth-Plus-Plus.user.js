@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Labyrinth++
-// @version      0.4
+// @version      0.5
 // @description  Upgrade Labyrinth with various features
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/labyrinth.html*
@@ -33,7 +33,7 @@
 
 (function() {
     'use strict';
-    /*global Hero,GT,opponent_fighter,hero_fighter,hero_page_popup,loadingAnimation,hh_ajax,Reward,HHPopupManager,objectivePopup,$*/
+    /*global Hero,GT,opponent_fighter,hero_fighter,hero_page_popup,loadingAnimation,hh_ajax,Reward,HHPopupManager,objectivePopup,getSessionId,$*/
 
     const LS_KEY = 'HHLabyrinthPlusPlus_Config';
 
@@ -142,7 +142,8 @@
             loadingAnimation.start();
 
             //open the battle page first
-            $.ajax({ url: "/labyrinth-battle.html?id_opponent=" + opponent_fighter.id_fighter + "&number_of_battles=1", success: function(data) {
+            const nutakuSessionId = getSessionId();
+            $.ajax({ url: "/labyrinth-battle.html?id_opponent=" + opponent_fighter.id_fighter + "&number_of_battles=1" + (nutakuSessionId !== null ? '&sess=' + nutakuSessionId : ''), success: function(data) {
 
                 //change referer
                 window.history.replaceState(null, '', "/labyrinth-battle.html?id_opponent=" + opponent_fighter.id_fighter + "&number_of_battles=1");
