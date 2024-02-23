@@ -209,7 +209,7 @@
             const allGirls = document.querySelectorAll('div.change-team-panel div.harem-panel-girls div.harem-girl-container');
             let counter = 0;
             allGirls.forEach((e) => { counter += (isHidden(e) ? 0 : 1) });
-            mySquadNode.innerHTML = mySquadText + '<br>' + counter + ' / ' + allGirls.length + ' Girls';
+            mySquadNode.innerHTML = mySquadText + '<br>' + counter + ' / ' + allGirls.length + ' ' + getGirlText() + 's';
         }
 
         function indexToArrayIndex(index)
@@ -347,6 +347,12 @@
     function saveConfigToLocalStorage(config)
     {
         localStorage.setItem(LS_KEY, JSON.stringify(config));
+    }
+
+    function getGirlText()
+    {
+        if(location.hostname.includes('gayharem')) return 'Boy';
+        return 'Girl'
     }
 
     function isHidden(el)
