@@ -352,7 +352,7 @@
     function getGirlText()
     {
         if(location.hostname.includes('gayharem')) return 'Boy';
-        return 'Girl'
+        return 'Girl';
     }
 
     function isHidden(el)
