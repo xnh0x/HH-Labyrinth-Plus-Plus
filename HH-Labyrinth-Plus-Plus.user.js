@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Labyrinth++
-// @version      0.6
+// @version      0.6.1
 // @description  Upgrade Labyrinth with various features
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/labyrinth.html*
@@ -351,7 +351,7 @@
 
     function getGirlText()
     {
-        if(location.hostname.includes('gayharem')) return 'Boy';
+        if(location.hostname.includes('gayharem')) return 'Guy';
         return 'Girl';
     }
 
