@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Labyrinth++
-// @version      0.5
+// @version      0.6
 // @description  Upgrade Labyrinth with various features
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/labyrinth.html*
@@ -174,16 +174,42 @@
         let css = document.createElement('style');
         document.head.appendChild(css);
 
-        css.sheet.insertRule('.change-team-panel button.pressedDown {box-shadow: none;}');
+        css.sheet.insertRule(`.change-team-panel button.pressedDown {
+  box-shadow: none;
+}`);
+        css.sheet.insertRule(`div.change-team-panel .panel-title {
+  font-size: 0.95rem;
+  margin-bottom: 0;
+  margin-top: -5px;
+  height: 47px;
+}`);
+        css.sheet.insertRule(`div.change-team-panel .panel-body {
+  height: 92% !important;
+}`);
+        css.sheet.insertRule(`div.change-team-panel .nicescroll-rails-vr {
+  top: 6.6rem !important;
+}`);
     }
 
     function EditTeam_run()
     {
+        const mySquadNode = document.querySelector('div.change-team-panel .panel-title');
+        const mySquadText = mySquadNode.innerText;
         const searchBtn = document.querySelector('#filter_girls');
         const btns = [createBtn(2), createBtn(1), createBtn(3)];
         let config = loadConfigFromLocalStorage();
         if(config.lastFilter !== 0) {
             setTimeout(() => { btns[indexToArrayIndex(config.lastFilter)].click(); }, 1);
+        } else {
+            updateMySquadText();
+        }
+
+        function updateMySquadText()
+        {
+            const allGirls = document.querySelectorAll('div.change-team-panel div.harem-panel-girls div.harem-girl-container');
+            let counter = 0;
+            allGirls.forEach((e) => { counter += (isHidden(e) ? 0 : 1) });
+            mySquadNode.innerHTML = mySquadText + '<br>' + counter + ' / ' + allGirls.length + ' Girls';
         }
 
         function indexToArrayIndex(index)
@@ -224,6 +250,7 @@
                 btn.classList.add('pressedDown');
             }
             document.querySelector('div.select-group.girl-class-filter div.selectric-items ul li[data-index="' + index + '"]').click();
+            updateMySquadText();
             config.lastFilter = index;
             saveConfigToLocalStorage(config);
         }
@@ -320,5 +347,10 @@
     function saveConfigToLocalStorage(config)
     {
         localStorage.setItem(LS_KEY, JSON.stringify(config));
+    }
+
+    function isHidden(el)
+    {
+        return (el.offsetParent === null);
     }
 })();
