@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Labyrinth++
-// @version      0.6.1
+// @version      0.7
 // @description  Upgrade Labyrinth with various features
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/labyrinth.html*
@@ -193,6 +193,7 @@
 
     function EditTeam_run()
     {
+        //filter
         const mySquadNode = document.querySelector('div.change-team-panel .panel-title');
         const mySquadText = mySquadNode.innerText;
         const searchBtn = document.querySelector('#filter_girls');
@@ -203,6 +204,11 @@
         } else {
             updateMySquadText();
         }
+
+        //select the first free slot
+        setTimeout(() => {
+            document.querySelector('.team-member-container.selectable .base-hexagon img:not([class])')?.click();
+        }, 1);
 
         function updateMySquadText()
         {
