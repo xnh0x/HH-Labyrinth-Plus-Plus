@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Labyrinth++
-// @version      0.7
+// @version      0.7.1
 // @description  Upgrade Labyrinth with various features
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/labyrinth.html*
@@ -305,7 +305,7 @@
                     {
                         for(let k = 0; k < mutations[i].addedNodes[j].childNodes.length; k++)
                         {
-                            if(mutations[i].addedNodes[j].childNodes[k].className === 'shop-items-list')
+                            if(typeof mutations[i].addedNodes[j].childNodes[k].classList !== 'undefined' && mutations[i].addedNodes[j].childNodes[k].classList.contains('shop-items-list'))
                             {
                                 //change style
                                 mutations[i].addedNodes[j].childNodes[k].setAttribute('style', 'grid-template-columns: auto auto auto auto auto; overflow: hidden; outline: none; grid-column-gap: 0.7rem; height: 20rem !important;');
