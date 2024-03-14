@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Labyrinth++
-// @version      0.7.1
+// @version      0.7.2
 // @description  Upgrade Labyrinth with various features
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/labyrinth.html*
@@ -73,6 +73,8 @@
 
     function PreBattle_run()
     {
+        const nutakuSessionId = getSessionId();
+
         //remove event listeners from middle container
         let container = document.querySelector('div.middle-container');
         container.setAttribute('style', 'text-align: center');
@@ -81,7 +83,7 @@
         //button Go Back
         let btnBack = document.querySelector('#return_labyrinth');
         btnBack.addEventListener("click", () => {
-            window.location.href = "/labyrinth.html"
+            window.location.href = "/labyrinth.html" + (nutakuSessionId !== null ? '?sess=' + nutakuSessionId : '')
         });
 
         //button Perform!
@@ -106,7 +108,7 @@
             var is_team_full = Object.keys(hero_fighter.team.girls).length == 7;
             if (is_team_full) {
                 if(skipFight) performAjax(); //new code
-                else window.location.href = "/labyrinth-battle.html?id_opponent=" + opponent_fighter.id_fighter + "&number_of_battles=1"
+                else window.location.href = "/labyrinth-battle.html?id_opponent=" + opponent_fighter.id_fighter + "&number_of_battles=1" + (nutakuSessionId !== null ? '&sess=' + nutakuSessionId : '')
             } else {
                 var partially_full_team_confirmation = {
                     confirm: {
@@ -122,7 +124,7 @@
                 };
                 HHPopupManager.show("confirmation_popup", partially_full_team_confirmation, function() {
                     if(skipFight) performAjax(); //new code
-                    else window.location.href = "/labyrinth-battle.html?id_opponent=" + opponent_fighter.id_fighter + "&number_of_battles=1"
+                    else window.location.href = "/labyrinth-battle.html?id_opponent=" + opponent_fighter.id_fighter + "&number_of_battles=1" + (nutakuSessionId !== null ? '&sess=' + nutakuSessionId : '')
                 })
             }
         }
@@ -142,7 +144,6 @@
             loadingAnimation.start();
 
             //open the battle page first
-            const nutakuSessionId = getSessionId();
             $.ajax({ url: "/labyrinth-battle.html?id_opponent=" + opponent_fighter.id_fighter + "&number_of_battles=1" + (nutakuSessionId !== null ? '&sess=' + nutakuSessionId : ''), success: function(data) {
 
                 //change referer
@@ -185,9 +186,6 @@
 }`);
         css.sheet.insertRule(`div.change-team-panel .panel-body {
   height: 92% !important;
-}`);
-        css.sheet.insertRule(`div.change-team-panel .nicescroll-rails-vr {
-  top: 6.6rem !important;
 }`);
     }
 
@@ -296,47 +294,48 @@
         bottomSection.appendChild(div);
 
         //shop mods
+        const container = document.querySelector('#shop_tab_container');
         new MutationObserver((mutations, observer) => {
-            for(let i = 0; i < mutations.length; i++)
-            {
-                for(let j = 0; j < mutations[i].addedNodes.length; j++)
-                {
-                    if(mutations[i].addedNodes[j].className === 'shop-section')
-                    {
-                        for(let k = 0; k < mutations[i].addedNodes[j].childNodes.length; k++)
-                        {
-                            if(typeof mutations[i].addedNodes[j].childNodes[k].classList !== 'undefined' && mutations[i].addedNodes[j].childNodes[k].classList.contains('shop-items-list'))
-                            {
-                                //change style
-                                mutations[i].addedNodes[j].childNodes[k].setAttribute('style', 'grid-template-columns: auto auto auto auto auto; overflow: hidden; outline: none; grid-column-gap: 0.7rem; height: 20rem !important;');
-
-                                let buyButtons = mutations[i].addedNodes[j].childNodes[k].querySelectorAll('button.blue_button_L.buy-item');
-                                for(let m = 0; m < buyButtons.length; m++)
-                                {
-                                    buyButtons[m].addEventListener("click", (event) => {
-
-                                        if(!confirm('Would you like to buy this item for ' + event.currentTarget.querySelector('.price-container').innerText.trim() + ' coins?'))
-                                        {
-                                            //stop the click event so that it is not executed by Kinkoid's handler
-                                            if (event.stopPropagation) {
-                                                event.stopPropagation(); // W3C model
-                                            } else {
-                                                event.cancelBubble = true; // IE model
-                                            }
-                                        }
-                                    });
-
-                                    //show the buy button again
-                                    buyButtons[m].setAttribute('style', 'display: inline-block !important');
-                                }
-
-                                return;
-                            }
-                        }
+            for(let i = 0; i < mutations.length; i++) {
+                for(let j = 0; j < mutations[i].addedNodes.length; j++) {
+                    if(mutations[i].addedNodes[j].nodeType === Node.ELEMENT_NODE && mutations[i].addedNodes[j].classList.contains('shop-section')) {
+                        applyShopMods(mutations[i].addedNodes[j]);
                     }
                 }
             }
-        }).observe(document.querySelector('#shop_tab_container'), { childList:true, subtree:true });
+        }).observe(container, { childList:true, subtree:true });
+        applyShopMods(container);
+
+        function applyShopMods(node)
+        {
+            //change items list style
+            const itemsList = node.querySelector('.shop-items-list');
+            if(itemsList) {
+                itemsList.setAttribute('style', 'grid-template-columns: auto auto auto auto auto; overflow: hidden; outline: none; grid-column-gap: 0.7rem; height: 20rem !important;');
+            }
+
+            //add confirmation to the buy buttons
+            let buyButtons = node.querySelectorAll('button.blue_button_L.buy-item');
+            for(let i = 0; i < buyButtons.length; i++)
+            {
+                let btn = buyButtons[i];
+
+                btn.addEventListener("click", (event) => {
+                    if(!confirm('Would you like to buy this item for ' + event.currentTarget.querySelector('.price-container').innerText.trim() + ' coins?'))
+                    {
+                        //stop the click event so that it is not executed by Kinkoid's handler
+                        if (event.stopPropagation) {
+                            event.stopPropagation(); // W3C model
+                        } else {
+                            event.cancelBubble = true; // IE model
+                        }
+                    }
+                });
+
+                //show the buy button again
+                btn.setAttribute('style', 'display: inline-block !important');
+            }
+        }
     }
 
     function loadConfigFromLocalStorage()
