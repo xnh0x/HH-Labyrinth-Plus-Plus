@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Labyrinth++
-// @version      0.8.0
+// @version      0.8.1
 // @description  Upgrade Labyrinth with various features
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/labyrinth.html*
@@ -33,7 +33,7 @@
 
 (function(window) {
     'use strict';
-    /*global shared,Hero,GT,opponent_fighter,hero_fighter,hero_page_popup,loadingAnimation,hh_ajax,Reward,HHPopupManager,objectivePopup,getSessionId,$*/
+    /*global shared,GT,opponent_fighter,hero_fighter,$*/
 
     console.log(GM_info.script.name + ' Script v' + GM_info.script.version);
 
@@ -63,7 +63,6 @@
         const loadingAnimation = (window.loadingAnimation ? window.loadingAnimation : shared.animations.loadingAnimation);
         const HHPopupManager = (window.HHPopupManager ? window.HHPopupManager : shared.popups_manager.HHPopupManager);
         const objectivePopup = (window.objectivePopup ? window.objectivePopup : shared.general.objectivePopup);
-        const hero_page_popup = (window.hero_page_popup ? window.hero_page_popup : shared.general.hero_page_popup);
         const Reward = (window.Reward ? window.Reward : shared.reward_popup.Reward);
         const getSessionId = (window.getSessionId ? window.getSessionId : () => { return new URLSearchParams(window.location.search).get("sess"); }); //Nutaku only
 
@@ -80,7 +79,7 @@
             let bottomSection = document.querySelector('.labyrinth-panel .labyrinth-container .bottom-section');
             let div = document.createElement('div');
             div.setAttribute('style', 'position: absolute;width: 260px;bottom: 0;left: -280px;font-size: 16px;box-shadow: 0 6px 12px rgba(0,0,0,.66),inset 0 0 50px rgba(102,32,52,.4);border-radius: 28px;border: 1px solid #f90;background-image: linear-gradient(to top,#7a3566 0,#412b4b 100%);text-align: center;');
-            div.innerHTML = GM_info.script.name + ' v' + GM_info.script.version + ' by <div style="display:inline;cursor:pointer" onclick="' + (window.location.hostname === 'www.hentaiheroes.com' ? 'hero_page_popup({id:4266159})' : 'window.open(\'https://www.hentaiheroes.com/hero/4266159/profile.html\', \'_blank\');') + '">-MM-</div>';
+            div.innerHTML = GM_info.script.name + ' v' + GM_info.script.version + ' by <div style="display:inline;cursor:pointer" onclick="' + (window.location.hostname === 'www.hentaiheroes.com' ? 'shared.general.hero_page_popup({ id:4266159, preview: false, page: \'profile\' })' : 'window.open(\'https://www.hentaiheroes.com/hero/4266159/profile.html\', \'_blank\');') + '">-MM-</div>';
             bottomSection.appendChild(div);
 
             //shop mods
