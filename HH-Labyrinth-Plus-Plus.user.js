@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Labyrinth++
-// @version      0.8.1
+// @version      0.8.2
 // @description  Upgrade Labyrinth with various features
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/labyrinth.html*
@@ -23,12 +23,25 @@
 // @match        https://*.gayharem.com/labyrinth-pre-battle.html?id_opponent=*
 // @match        https://*.gayharem.com/labyrinth-battle.html?id_opponent=*
 // @match        https://*.gayharem.com/edit-labyrinth-team.html*
+// @match        https://*.gaypornstarharem.com/labyrinth.html*
+// @match        https://*.gaypornstarharem.com/labyrinth-pre-battle.html?id_opponent=*
+// @match        https://*.gaypornstarharem.com/labyrinth-battle.html?id_opponent=*
+// @match        https://*.gaypornstarharem.com/edit-labyrinth-team.html*
+// @match        https://*.transpornstarharem.com/labyrinth.html*
+// @match        https://*.transpornstarharem.com/labyrinth-pre-battle.html?id_opponent=*
+// @match        https://*.transpornstarharem.com/labyrinth-battle.html?id_opponent=*
+// @match        https://*.transpornstarharem.com/edit-labyrinth-team.html*
+// @match        https://*.hornyheroes.com/labyrinth.html*
+// @match        https://*.hornyheroes.com/labyrinth-pre-battle.html?id_opponent=*
+// @match        https://*.hornyheroes.com/labyrinth-battle.html?id_opponent=*
+// @match        https://*.hornyheroes.com/edit-labyrinth-team.html*
 // @run-at       document-body
 // @namespace    https://github.com/HH-GAME-MM/HH-Labyrinth-Plus-Plus
 // @updateURL    https://github.com/HH-GAME-MM/HH-Labyrinth-Plus-Plus/raw/main/HH-Labyrinth-Plus-Plus.user.js
 // @downloadURL  https://github.com/HH-GAME-MM/HH-Labyrinth-Plus-Plus/raw/main/HH-Labyrinth-Plus-Plus.user.js
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=hentaiheroes.com
 // @grant        GM_info
+// @grant        unsafeWindow
 // ==/UserScript==
 
 (function(window) {
@@ -376,4 +389,4 @@
     {
         return (el.offsetParent === null);
     }
-})(window.unsafeWindow);
+})(unsafeWindow);
