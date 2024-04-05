@@ -1,7 +1,7 @@
 # HH-Labyrinth-Plus-Plus
 Upgrade Labyrinth with various features
 
-Supported games: HH.com, Nutaku, CxH, PsH, GH
+Supported games: HH.com, Nutaku, CxH, PsH, GH, GPSH, TPSH, hornyheroes.com
 
 Features:
 - Additional button "Perform and skip battle"
