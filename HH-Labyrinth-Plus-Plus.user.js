@@ -216,7 +216,7 @@
                 $.ajax({ url: "/labyrinth-battle.html?id_opponent=" + opponent_fighter.id_fighter + "&number_of_battles=1" + (nutakuSessionId !== null ? '&sess=' + nutakuSessionId : ''), success: function(data) {
 
                     //change referer
-                    window.history.replaceState(null, '', "/labyrinth-battle.html?id_opponent=" + opponent_fighter.id_fighter + "&number_of_battles=1");
+                    window.history.replaceState(null, '', "/labyrinth-battle.html?id_opponent=" + opponent_fighter.id_fighter + "&number_of_battles=1" + (nutakuSessionId !== null ? '&sess=' + nutakuSessionId : ''));
 
                     let params = {
                         action: "do_battles_labyrinth",
@@ -225,7 +225,7 @@
                     };
                     hh_ajax(params, function(data) {
                         //change referer
-                        window.history.replaceState(null, '', '/labyrinth-pre-battle.html?id_opponent=' + opponent_fighter.id_fighter);
+                        window.history.replaceState(null, '', '/labyrinth-pre-battle.html?id_opponent=' + opponent_fighter.id_fighter + (nutakuSessionId !== null ? '&sess=' + nutakuSessionId : ''));
 
                         loadingAnimation.stop();
                         Reward.handlePopup(data.rewards);
