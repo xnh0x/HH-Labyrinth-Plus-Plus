@@ -1,4 +1,4 @@
-# HH-Labyrinth-Plus-Plus
+# HH Labyrinth++
 Upgrade Labyrinth with various features
 
 Supported games: HH.com, Nutaku, CxH, PsH, GH, GPSH, TPSH, hornyheroes.com
