@@ -3,6 +3,8 @@ Upgrade Labyrinth with various features
 
 Supported games: HH.com, Nutaku, CxH, PsH, GH, GPSH, TPSH, hornyheroes.com
 
+Compatible Browsers: Mozilla Firefox (Desktop), Google Chrome (Desktop & Android), Opera (Desktop), Firefox Nightly (Android), Kiwi Browser (Android), Safari (with Safari extension ["Stay"](https://apps.apple.com/us/app/stay-for-safari/id1591620171))
+
 Features:
 - Additional button "Perform and skip battle"
 - Quick filter (tanks, mages, damage dealers) in "My Squad"
