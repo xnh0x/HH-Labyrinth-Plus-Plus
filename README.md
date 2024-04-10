@@ -7,7 +7,7 @@ Compatible Browsers: Mozilla Firefox (Desktop), Google Chrome (Desktop & Android
 
 See here for installation instructions: https://github.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus
 
-Features:
+<b>Features:</b>
 - Additional button "Perform and skip battle"
 - Quick filter (tanks, mages, damage dealers) in "My Squad"
 - Style Tweaks in the shop so that there is no longer a scroll bar
