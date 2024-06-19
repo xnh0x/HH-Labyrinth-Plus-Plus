@@ -10,7 +10,7 @@ See here for installation instructions: [https://github.com/HH-GAME-MM/HH-Club-C
 <b>Features:</b>
 - Additional button "Perform and skip battle"
 - Quick filter (tanks, mages, damage dealers) in "My Squad"
-- Relics are rated with smilies
+- Relics are rated with smilies (Thanks EpicBacon aka Laby Guru)
 - Confirmation box when you want to buy something (misclick protection)
 - "Open Edit Team Page" when you get new relics
 - Style Tweaks in the shop so that there is no longer a scroll bar
