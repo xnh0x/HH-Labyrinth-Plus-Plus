@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Labyrinth++
-// @version      0.9.1
+// @version      0.9.2
 // @description  Upgrade Labyrinth with various features
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/labyrinth.html*
@@ -285,6 +285,17 @@
                 KK_isTeamFull(true);
             });
             btnPerform.after(btnPerformAjax);
+
+            //fix HH++ relics button
+            let btnRelics = document.querySelector('.script-relics-toggle');
+            if(btnRelics !== null)
+            {
+                let btnRelicsClone = btnRelics.cloneNode(true);
+                btnRelics.parentNode.replaceChild(btnRelicsClone, btnRelics);
+                btnRelicsClone.addEventListener("click", () => {
+                    $('.middle-container .script-relics-panel').toggle();
+                });
+            }
 
             //KK Code modified with "if(skipFight) performAjax();"
             function KK_isTeamFull(skipFight)
