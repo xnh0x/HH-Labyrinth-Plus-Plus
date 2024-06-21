@@ -1,40 +1,48 @@
 // ==UserScript==
 // @name         HH Labyrinth++
-// @version      0.9.2
+// @version      0.9.3
 // @description  Upgrade Labyrinth with various features
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/labyrinth.html*
 // @match        https://*.hentaiheroes.com/labyrinth-pre-battle.html?id_opponent=*
 // @match        https://*.hentaiheroes.com/labyrinth-battle.html?id_opponent=*
 // @match        https://*.hentaiheroes.com/edit-labyrinth-team.html*
+// @match        https://*.hentaiheroes.com/home.html*
 // @match        https://nutaku.haremheroes.com/labyrinth.html*
 // @match        https://nutaku.haremheroes.com/labyrinth-pre-battle.html?id_opponent=*
 // @match        https://nutaku.haremheroes.com/labyrinth-battle.html?id_opponent=*
 // @match        https://nutaku.haremheroes.com/edit-labyrinth-team.html*
+// @match        https://nutaku.haremheroes.com/home.html*
 // @match        https://*.comixharem.com/labyrinth.html*
 // @match        https://*.comixharem.com/labyrinth-pre-battle.html?id_opponent=*
 // @match        https://*.comixharem.com/labyrinth-battle.html?id_opponent=*
 // @match        https://*.comixharem.com/edit-labyrinth-team.html*
+// @match        https://*.comixharem.com/home.html*
 // @match        https://*.pornstarharem.com/labyrinth.html*
 // @match        https://*.pornstarharem.com/labyrinth-pre-battle.html?id_opponent=*
 // @match        https://*.pornstarharem.com/labyrinth-battle.html?id_opponent=*
 // @match        https://*.pornstarharem.com/edit-labyrinth-team.html*
+// @match        https://*.pornstarharem.com/home.html*
 // @match        https://*.gayharem.com/labyrinth.html*
 // @match        https://*.gayharem.com/labyrinth-pre-battle.html?id_opponent=*
 // @match        https://*.gayharem.com/labyrinth-battle.html?id_opponent=*
 // @match        https://*.gayharem.com/edit-labyrinth-team.html*
+// @match        https://*.gayharem.com/home.html*
 // @match        https://*.gaypornstarharem.com/labyrinth.html*
 // @match        https://*.gaypornstarharem.com/labyrinth-pre-battle.html?id_opponent=*
 // @match        https://*.gaypornstarharem.com/labyrinth-battle.html?id_opponent=*
 // @match        https://*.gaypornstarharem.com/edit-labyrinth-team.html*
+// @match        https://*.gaypornstarharem.com/home.html*
 // @match        https://*.transpornstarharem.com/labyrinth.html*
 // @match        https://*.transpornstarharem.com/labyrinth-pre-battle.html?id_opponent=*
 // @match        https://*.transpornstarharem.com/labyrinth-battle.html?id_opponent=*
 // @match        https://*.transpornstarharem.com/edit-labyrinth-team.html*
+// @match        https://*.transpornstarharem.com/home.html*
 // @match        https://*.hornyheroes.com/labyrinth.html*
 // @match        https://*.hornyheroes.com/labyrinth-pre-battle.html?id_opponent=*
 // @match        https://*.hornyheroes.com/labyrinth-battle.html?id_opponent=*
 // @match        https://*.hornyheroes.com/edit-labyrinth-team.html*
+// @match        https://*.hornyheroes.com/home.html*
 // @run-at       document-body
 // @namespace    https://github.com/HH-GAME-MM/HH-Labyrinth-Plus-Plus
 // @updateURL    https://github.com/HH-GAME-MM/HH-Labyrinth-Plus-Plus/raw/main/HH-Labyrinth-Plus-Plus.user.js
@@ -46,7 +54,12 @@
 
 (function(window) {
     'use strict';
-    /*global shared,GT,opponent_fighter,hero_fighter,$*/
+    /*global shared,GT,opponent_fighter,hero_fighter,get_lang,$*/
+
+    //cancel script when we are on home.html
+    if(window.location.pathname === '/home.html') {
+        return;
+    }
 
     console.log(GM_info.script.name + ' Script v' + GM_info.script.version);
 
@@ -62,14 +75,10 @@
         case '/edit-labyrinth-team.html': EditTeam_css(); break;
     }
 
-    if(document.readyState === 'complete') {
+    if(document.readyState !== 'loading') {
         DOMContentLoaded();
     } else {
-        document.addEventListener('readystatechange', () => {
-            if(document.readyState === 'complete') {
-                DOMContentLoaded();
-            }
-        });
+        document.addEventListener('DOMContentLoaded', DOMContentLoaded);
     }
 
     function DOMContentLoaded()
@@ -85,9 +94,17 @@
 
         switch(window.location.pathname)
         {
-            case '/labyrinth.html': setTimeout(Labyrinth_run, 1); break;
-            case '/labyrinth-pre-battle.html': setTimeout(PreBattle_run, 1); break;
-            case '/edit-labyrinth-team.html': setTimeout(EditTeam_run, 1); break;
+            case '/labyrinth.html': onReadyRun(Labyrinth_run, '.labyrinth-panel .labyrinth-container .bottom-section'); break;
+            case '/labyrinth-pre-battle.html': onReadyRun(PreBattle_run, '#perform_opponent'); break;
+            case '/edit-labyrinth-team.html': onReadyRun(EditTeam_run, 'div.change-team-panel .panel-title'); break;
+        }
+
+        function onReadyRun(callback, selector) {
+            if(document.querySelector(selector) !== null) {
+                callback();
+            } else {
+                setTimeout(onReadyRun, 10, callback, selector);
+            }
         }
 
         function Labyrinth_run()
@@ -163,93 +180,103 @@
                     const nutakuSessionId = getSessionId();
                     nodeRewardsScrollable.innerHTML += '<a style="position: absolute; right: 130px; top: 1rem; color: white;" href="/edit-labyrinth-team.html' + (nutakuSessionId !== null ? '?sess=' + nutakuSessionId : '') + '">Open Edit Team Page</a>';
 
-                    //relic ratings
-                    if(get_lang() === 'en')
+                    const lang = get_lang().substr(0, 2);
+
+                    const allGirls = {
+                        en: ['all girls'],
+                        de: ['aller mädchen', 'allen mädchen'],
+                        es: ['de todas las chicas'],
+                        fr: ['de toutes les filles'],
+                        it: ['di tutte le ragazze'],
+                        ja: ['all girls'],
+                        ru: ['all girls'],
+                    }
+
+                    let iconSet = ['https://cdnjs.cloudflare.com/ajax/libs/twemoji/13.0.1/72x72/1f600.png', //very good relic
+                                   'https://cdnjs.cloudflare.com/ajax/libs/twemoji/13.0.1/72x72/1f642.png', //good relic
+                                   'https://cdnjs.cloudflare.com/ajax/libs/twemoji/13.0.1/72x72/1f641.png', //bad relic
+                                   'https://cdnjs.cloudflare.com/ajax/libs/twemoji/13.0.1/72x72/1f629.png', //very bad relic
+                                   'https://cdnjs.cloudflare.com/ajax/libs/twemoji/13.0.1/72x72/1f914.png']; //not rated
+
+                    //custom iconSet
+                    if(location.hostname === 'www.hentaiheroes.com')
                     {
-                        let iconSet = ['https://cdnjs.cloudflare.com/ajax/libs/twemoji/13.0.1/72x72/1f600.png', //very good relic
-                                       'https://cdnjs.cloudflare.com/ajax/libs/twemoji/13.0.1/72x72/1f642.png', //good relic
-                                       'https://cdnjs.cloudflare.com/ajax/libs/twemoji/13.0.1/72x72/1f641.png', //bad relic
-                                       'https://cdnjs.cloudflare.com/ajax/libs/twemoji/13.0.1/72x72/1f629.png', //very bad relic
-                                       'https://cdnjs.cloudflare.com/ajax/libs/twemoji/13.0.1/72x72/1f914.png']; //not rated
-
-                        //custom iconSet
-                        if(location.hostname === 'www.hentaiheroes.com')
+                        //-MM- and Zam
+                        if(Hero.infos.id === 4266159 || Hero.infos.id === 3486370)
                         {
-                            //-MM- and Zam
-                            if(Hero.infos.id === 4266159 || Hero.infos.id === 3486370)
-                            {
-                                iconSet[0] = 'https://raw.githubusercontent.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus/main/res/emojis/asuna_happy.png';
-                                iconSet[4] = 'https://cdn.discordapp.com/emojis/862672993720336394.webp?size=48&quality=lossless';
-                            }
-                            //holymolly
-                            else if(Hero.infos.id === 844437)
-                            {
-                                iconSet[0] = 'https://cdn.discordapp.com/emojis/953395143510224957.webp?size=48&quality=lossless';
-                                iconSet[3] = 'https://media.tenor.com/OtYUkoFsA1AAAAAM/mona-mona-genshin-impact.gif';
-                                iconSet[4] = 'https://cdn.discordapp.com/emojis/862672993720336394.webp?size=48&quality=lossless';
-                            }
-                            //Darkyz
-                            else if(Hero.infos.id === 124704)
-                            {
-                                iconSet[0] = 'https://cdn.discordapp.com/avatars/334514898010636289/97f004f88d823d9614436c8d3b08edc1.webp?size=128';
-                            }
+                            iconSet[0] = 'https://raw.githubusercontent.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus/main/res/emojis/asuna_happy.png';
+                            iconSet[4] = 'https://cdn.discordapp.com/emojis/862672993720336394.webp?size=48&quality=lossless';
+                        }
+                        //holymolly
+                        else if(Hero.infos.id === 844437)
+                        {
+                            iconSet[0] = 'https://cdn.discordapp.com/emojis/953395143510224957.webp?size=48&quality=lossless';
+                            iconSet[3] = 'https://media.tenor.com/OtYUkoFsA1AAAAAM/mona-mona-genshin-impact.gif';
+                            iconSet[4] = 'https://cdn.discordapp.com/emojis/862672993720336394.webp?size=48&quality=lossless';
+                        }
+                        //Darkyz
+                        else if(Hero.infos.id === 124704)
+                        {
+                            iconSet[0] = 'https://cdn.discordapp.com/avatars/334514898010636289/97f004f88d823d9614436c8d3b08edc1.webp?size=128';
+                        }
+                    }
+
+                    //relic ratings
+                    const relicNodes = node.querySelectorAll('.relic-container');
+                    for(let i = 0; i < relicNodes.length; i++)
+                    {
+                        const nameAndRarityNode = relicNodes[i].querySelector('.relic-name');
+                        const nameAndRarity = nameAndRarityNode.innerText;
+                        const descriptionLC = relicNodes[i].querySelector('.relic-description').innerText.toLowerCase();
+                        const relicIsAllGirls = allGirls[lang].some(e => descriptionLC.includes(e));
+
+                        let iconIndex = 4;
+                        let iconText = "unrated relic";
+
+                        //very good relic?
+                        if(nameAndRarity.startsWith(GT.design.girl_dodge_name) || //Duck Master
+                           nameAndRarity.startsWith(GT.design.team_healthy_name) || //Vigorous Motivation
+                           nameAndRarity.startsWith(GT.design.team_executioner_name) || //Finish Move
+                           nameAndRarity.startsWith(GT.design.team_protective_name)) //Protective Bubble
+                        {
+                            iconIndex = 0;
+                            iconText = "very good relic";
+                        }
+                        //good relic?
+                        else if(nameAndRarity.startsWith(GT.design.team_impactful_back_name) || //Attack from the Back
+                                nameAndRarity.startsWith(GT.design.team_critical_expectation_name) || //Critical Expectation
+                                (nameAndRarity.startsWith(GT.design.team_egoist_name) && relicIsAllGirls) || //Egoist
+                                nameAndRarity.startsWith(GT.design.girl_double_attack_name) || //Double Attack
+                                (nameAndRarity.startsWith(GT.design.team_impactful_name) && relicIsAllGirls) || //Impactful
+                                (nameAndRarity.startsWith(GT.design.team_critical_name) && relicIsAllGirls)) //Critical Thinking
+                        {
+                            iconIndex = 1;
+                            iconText = "good relic";
+                        }
+                        //bad relic?
+                        else if(nameAndRarity.startsWith(GT.design.team_hex_name) || //Curse
+                                nameAndRarity.startsWith(GT.design.team_berserk_name) || //Berserk
+                                nameAndRarity.startsWith(GT.design.team_shield_name) || //Protection Assist
+                                (nameAndRarity.startsWith(GT.design.team_harmony_name) && relicIsAllGirls)) //Sweet Harmony
+                        {
+                            iconIndex = 2;
+                            iconText = "bad relic";
+                        }
+                        //very bad relic?
+                        else if(nameAndRarity.startsWith(GT.design.girl_harmony_name) || //Sweet Harmony
+                                nameAndRarity.startsWith(GT.design.team_harmony_middle_name)) //Harmony in the middle
+                        {
+                            iconIndex = 3;
+                            iconText = "very bad relic";
                         }
 
-                        const relics = node.querySelectorAll('.relic-container');
-                        for(let i = 0; i < relics.length; i++)
-                        {
-                            const nameAndRarityNode = relics[i].querySelector('.relic-name');
-                            const nameAndRarity = nameAndRarityNode.innerText.toLowerCase();
-                            const description = relics[i].querySelector('.relic-description').innerText;
+                        //unrated relics:
+                        //rejuvenation
+                        //element powers
+                        //defender of the haremverse
+                        //front defender
 
-                            let iconIndex = 4;
-                            let iconText = "unrated relic";
-
-                            //very good relic?
-                            if(nameAndRarity.startsWith('duck master') ||
-                               nameAndRarity.startsWith('vigorous motivation') ||
-                               nameAndRarity.startsWith('finish move') ||
-                               nameAndRarity.startsWith('protective bubble'))
-                            {
-                                iconIndex = 0;
-                                iconText = "very good relic";
-                            }
-                            //good relic?
-                            else if(nameAndRarity.startsWith('attack from the back') ||
-                                    nameAndRarity.startsWith('critical expectation') ||
-                                    (nameAndRarity.startsWith('egoist') && description.includes('all')) ||
-                                    nameAndRarity.startsWith('double attack') ||
-                                    (nameAndRarity.startsWith('impactful') && description.includes('all')) ||
-                                    (nameAndRarity.startsWith('critical thinking') && description.includes('all')))
-                            {
-                                iconIndex = 1;
-                                iconText = "good relic";
-                            }
-                            //bad relic?
-                            else if(nameAndRarity.startsWith('curse') ||
-                                    nameAndRarity.startsWith('berserk') ||
-                                    nameAndRarity.startsWith('protection assist') ||
-                                    (nameAndRarity.startsWith('sweet harmony') && description.includes('all')))
-                            {
-                                iconIndex = 2;
-                                iconText = "bad relic";
-                            }
-                            //very bad relic?
-                            else if(nameAndRarity.startsWith('sweet harmony') ||
-                                    nameAndRarity.startsWith('harmony in the middle'))
-                            {
-                                iconIndex = 3;
-                                iconText = "very bad relic";
-                            }
-
-                            //unrated relics:
-                            //rejuvenation
-                            //element powers
-                            //defender of the haremverse
-                            //front defender
-
-                            nameAndRarityNode.innerHTML += '<img src="' + iconSet[iconIndex] + '" style="width: 36px;position: absolute;right: -15px;top: -20px;" title="' + iconText + '" alt="' + iconText + '">';
-                        }
+                        nameAndRarityNode.innerHTML += '<img src="' + iconSet[iconIndex] + '" style="width: 36px;position: absolute;right: -15px;top: -20px;" title="' + iconText + '" alt="' + iconText + '">';
                     }
                 }
             }
@@ -367,6 +394,9 @@
 
         function EditTeam_run()
         {
+            //fix redirectUrl
+            window.redirectUrl = window.redirectUrl.replace('/edit-labyrinth-team.html', '/labyrinth.html');
+
             //filter
             const mySquadNode = document.querySelector('div.change-team-panel .panel-title');
             const mySquadText = mySquadNode.innerText;
