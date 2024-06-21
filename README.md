@@ -7,6 +7,8 @@ Compatible Browsers: Mozilla Firefox (Desktop), Google Chrome (Desktop & Android
 
 See here for installation instructions: [https://github.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus](https://github.com/HH-GAME-MM/HH-Club-Chat-Plus-Plus/?tab=readme-ov-file#windows--mac-os---installation-instructions)
 
+Script URL: https://github.com/HH-GAME-MM/HH-Labyrinth-Plus-Plus/raw/main/HH-Labyrinth-Plus-Plus.user.js
+
 <b>Features:</b>
 - Additional button "Perform and skip battle"
 - Quick filter (tanks, mages, damage dealers) in "My Squad"
