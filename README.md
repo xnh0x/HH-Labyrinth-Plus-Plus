@@ -14,5 +14,3 @@ See here for installation instructions: [https://github.com/HH-GAME-MM/HH-Club-C
 - Confirmation box when you want to buy something (misclick protection)
 - "Open Edit Team Page" when you get new relics
 - Style Tweaks in the shop so that there is no longer a scroll bar
-
-Important note: Ratings only if you are currently playing the game in English. Other languages will follow.
