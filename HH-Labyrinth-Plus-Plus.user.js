@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Labyrinth++
-// @version      0.9.3
+// @version      0.9.4
 // @description  Upgrade Labyrinth with various features
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/labyrinth.html*
@@ -112,7 +112,7 @@
             //HH Labyrinth++ text
             let bottomSection = document.querySelector('.labyrinth-panel .labyrinth-container .bottom-section');
             let div = document.createElement('div');
-            div.setAttribute('style', 'position: absolute;width: 260px;bottom: 0;left: -280px;font-size: 16px;box-shadow: 0 6px 12px rgba(0,0,0,.66),inset 0 0 50px rgba(102,32,52,.4);border-radius: 28px;border: 1px solid #f90;background-image: linear-gradient(to top,#7a3566 0,#412b4b 100%);text-align: center;');
+            div.setAttribute('class', 'credits');
             div.innerHTML = GM_info.script.name + ' v' + GM_info.script.version + ' by <div style="display:inline;cursor:pointer" onclick="' + (window.location.hostname === 'www.hentaiheroes.com' ? 'shared.general.hero_page_popup({ id:4266159, preview: false, page: \'profile\' })' : 'window.open(\'https://www.hentaiheroes.com/hero/4266159/profile.html\', \'_blank\');') + '">-MM-</div>';
             bottomSection.appendChild(div);
 
@@ -398,13 +398,17 @@
             window.redirectUrl = window.redirectUrl.replace('/edit-labyrinth-team.html', '/labyrinth.html');
 
             //filter
-            const mySquadNode = document.querySelector('div.change-team-panel .panel-title');
+            const mySquadNodeOri = document.querySelector('div.change-team-panel .panel-title');
+            const mySquadNode = mySquadNodeOri.cloneNode(true); //reason for cloneNode: remove HH++ number e.g. "(280)"
+            mySquadNodeOri.setAttribute('style', 'display:none');
+            mySquadNode.setAttribute('class', 'panel-title-custom');
+            mySquadNodeOri.after(mySquadNode);
             const mySquadText = mySquadNode.innerText;
             const searchBtn = document.querySelector('#filter_girls');
             const btns = [createBtn(2), createBtn(1), createBtn(3)];
             let config = loadConfigFromLocalStorage();
             if(config.lastFilter !== 0) {
-                setTimeout(() => { btns[indexToArrayIndex(config.lastFilter)].click(); }, 1);
+                onReadyRun(() => { btns[indexToArrayIndex(config.lastFilter)].click(); }, 'div.select-group.girl-class-filter div.selectric-items ul li[data-index="1"]');
             } else {
                 updateMySquadText();
             }
@@ -484,11 +488,15 @@
         css.sheet.insertRule(`.change-team-panel button.pressedDown {
   box-shadow: none;
 }`);
-        css.sheet.insertRule(`div.change-team-panel .panel-title {
+        css.sheet.insertRule(`div.change-team-panel .panel-title-custom {
   font-size: 0.95rem;
   margin-bottom: 0;
   margin-top: -5px;
   height: 47px;
+  color: #FFB827;
+  margin-right: 0.7rem;
+  margin-left: 0.7rem;
+  text-align: center;
 }`);
         css.sheet.insertRule(`div.change-team-panel .panel-body {
   height: 92% !important;
@@ -508,6 +516,9 @@
     {
         let css = document.createElement('style');
         document.head.appendChild(css);
+
+        //credits
+        css.sheet.insertRule('.labyrinth-panel .labyrinth-container .bottom-section .credits {position: absolute;width: 260px;bottom: 0;left: -280px;font-size: 16px;box-shadow: 0 6px 12px rgba(0,0,0,.66),inset 0 0 50px rgba(102,32,52,.4);border-radius: 28px;border: 1px solid #f90;background-image: linear-gradient(to top,#7a3566 0,#412b4b 100%);text-align: center;}');
 
         //shop items
         css.sheet.insertRule('#shop_tab_container .shop-items-list .shop-item {transform: scale(0.8);}');
@@ -537,7 +548,7 @@
 
     function getGirlText()
     {
-        if(location.hostname.includes('gayharem')) return 'Guy';
+        if(location.hostname.includes('gayharem') || location.hostname.includes('gaypornstarharem')) return 'Guy';
         return 'Girl';
     }
 
