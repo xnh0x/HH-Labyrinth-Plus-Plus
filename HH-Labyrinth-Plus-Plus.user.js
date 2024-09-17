@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Labyrinth++
-// @version      0.9.4
+// @version      0.9.5
 // @description  Upgrade Labyrinth with various features
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/labyrinth.html*
@@ -130,12 +130,12 @@
             applyShopMods(container);
 
             //reward popup mods
-            const popupContainer = document.querySelector('#popups');
+            const popupContainer = document.querySelector('#common-popups');
             new MutationObserver((mutations, observer) => {
                 for(let i = 0; i < mutations.length; i++) {
                     for(let j = 0; j < mutations[i].addedNodes.length; j++) {
-                        if(mutations[i].addedNodes[j].nodeType === Node.ELEMENT_NODE && mutations[i].addedNodes[j].getAttribute('id') === 'labyrinth_reward_popup') {
-                            applyPopupMods(mutations[i].addedNodes[j]);
+                        if(mutations[i].addedNodes[j].nodeType === Node.ELEMENT_NODE && applyPopupMods(mutations[i].addedNodes[j])) {
+                            return;
                         }
                     }
                 }
@@ -176,13 +176,21 @@
             function applyPopupMods(node)
             {
                 const nodeRewardsScrollable = node.querySelector('#reward_holder .rewards_scrollable');
-                if(nodeRewardsScrollable !== null && document.querySelector('#reward_holder .rewards_scrollable a') === null) {
+                if(nodeRewardsScrollable !== null && node.querySelector('#reward_holder .rewards_scrollable a') === null) {
                     const nutakuSessionId = getSessionId();
                     nodeRewardsScrollable.innerHTML += '<a style="position: absolute; right: 130px; top: 1rem; color: white;" href="/edit-labyrinth-team.html' + (nutakuSessionId !== null ? '?sess=' + nutakuSessionId : '') + '">Open Edit Team Page</a>';
 
                     const lang = get_lang().substr(0, 2);
 
-                    const allGirls = {
+                    const allGirls = (isGay() ? {
+                        en: ['all guys'],
+                        de: ['aller kerle', 'allen kerlen'],
+                        es: ['de todos los chicos'], //lang does not exist
+                        fr: ['de tous les mecs'],
+                        it: ['di tutti i ragazzi'], //lang does not exist
+                        ja: ['all guys'], //lang does not exist
+                        ru: ['all guys'], //lang does not exist
+                    } : {
                         en: ['all girls'],
                         de: ['aller mädchen', 'allen mädchen'],
                         es: ['de todas las chicas'],
@@ -190,7 +198,7 @@
                         it: ['di tutte le ragazze'],
                         ja: ['all girls'],
                         ru: ['all girls'],
-                    }
+                    });
 
                     let iconSet = ['https://cdnjs.cloudflare.com/ajax/libs/twemoji/13.0.1/72x72/1f600.png', //very good relic
                                    'https://cdnjs.cloudflare.com/ajax/libs/twemoji/13.0.1/72x72/1f642.png', //good relic
@@ -278,7 +286,11 @@
 
                         nameAndRarityNode.innerHTML += '<img src="' + iconSet[iconIndex] + '" style="width: 36px;position: absolute;right: -15px;top: -20px;" title="' + iconText + '" alt="' + iconText + '">';
                     }
+
+                    return true;
                 }
+
+                return false;
             }
         }
 
@@ -548,8 +560,15 @@
 
     function getGirlText()
     {
-        if(location.hostname.includes('gayharem') || location.hostname.includes('gaypornstarharem')) return 'Guy';
+        if(isGay()) {
+            return 'Guy';
+        }
         return 'Girl';
+    }
+
+    function isGay()
+    {
+        return (location.hostname.includes('gayharem') || location.hostname.includes('gaypornstarharem'));
     }
 
     function isHidden(el)
