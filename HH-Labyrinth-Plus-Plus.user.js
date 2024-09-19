@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Labyrinth++
-// @version      0.9.5
+// @version      0.9.6
 // @description  Upgrade Labyrinth with various features
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/labyrinth.html*
@@ -313,7 +313,7 @@
             let btnPerform = document.querySelector('#perform_opponent');
             btnPerform.setAttribute('style', 'display: inline-block');
             btnPerform.addEventListener("click", () => {
-                KK_isTeamFull(false);
+                btnPerform_Click(false);
             });
 
             //button Perform and skip battle!
@@ -321,7 +321,7 @@
             btnPerformAjax.setAttribute('style', 'display: inline-block; margin-top: 2rem');
             btnPerformAjax.innerHTML = 'Perform and skip battle!';
             btnPerformAjax.addEventListener("click", () => {
-                KK_isTeamFull(true);
+                btnPerform_Click(true);
             });
             btnPerform.after(btnPerformAjax);
 
@@ -336,30 +336,15 @@
                 });
             }
 
-            //KK Code modified with "if(skipFight) performAjax();"
-            function KK_isTeamFull(skipFight)
+            function btnPerform_Click(skipFight)
             {
-                var is_team_full = Object.keys(hero_fighter.team.girls).length == 7;
-                if (is_team_full) {
-                    if(skipFight) performAjax(); //new code
-                    else window.location.href = "/labyrinth-battle.html?id_opponent=" + opponent_fighter.id_fighter + "&number_of_battles=1" + (nutakuSessionId !== null ? '&sess=' + nutakuSessionId : '');
-                } else {
-                    var partially_full_team_confirmation = {
-                        confirm: {
-                            title: "",
-                            body: GT.design.labyrinth_partially_full_team,
-                            buttons: {
-                                yes: "OK",
-                                no: GT.design.push_notif_no_thanks
-                            }
-                        },
-                        no_close: true,
-                        textAlign: "center"
-                    };
-                    HHPopupManager.show("confirmation_popup", partially_full_team_confirmation, function() {
-                        if(skipFight) performAjax(); //new code
-                        else window.location.href = "/labyrinth-battle.html?id_opponent=" + opponent_fighter.id_fighter + "&number_of_battles=1" + (nutakuSessionId !== null ? '&sess=' + nutakuSessionId : '');
-                    })
+                var isTeamFull = Object.keys(hero_fighter.team.girls).length === 7;
+                if (isTeamFull || confirm(GT.design.labyrinth_partially_full_team)) {
+                    if(skipFight) {
+                        performAjax();
+                    } else {
+                        window.location.href = "/labyrinth-battle.html?id_opponent=" + opponent_fighter.id_fighter + "&number_of_battles=1" + (nutakuSessionId !== null ? '&sess=' + nutakuSessionId : '');
+                    }
                 }
             }
 
