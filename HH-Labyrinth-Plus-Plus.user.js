@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Labyrinth++
-// @version      0.9.6
+// @version      0.9.7
 // @description  Upgrade Labyrinth with various features
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/labyrinth.html*
@@ -147,7 +147,8 @@
                 //change items list style
                 const itemsList = node.querySelector('.shop-items-list');
                 if(itemsList) {
-                    itemsList.setAttribute('style', 'grid-template-columns: auto auto auto auto auto; overflow: hidden; outline: none; grid-column-gap: 0.7rem; height: 20rem !important;');
+                    const shopItemsCount = itemsList.querySelectorAll('.shop-item').length;
+                    itemsList.setAttribute('style', 'grid-template-columns: auto auto auto auto auto; overflow: ' + (shopItemsCount > 10 ? 'scroll' : 'hidden') + '; outline: none; grid-column-gap: 0.7rem; height: ' + (shopItemsCount > 10 ? '26.5' : '20') + 'rem !important;');
                 }
 
                 //add confirmation to the buy buttons
