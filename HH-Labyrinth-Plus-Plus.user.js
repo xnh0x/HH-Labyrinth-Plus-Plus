@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Labyrinth++
-// @version      0.9.7
+// @version      0.9.8
 // @description  Upgrade Labyrinth with various features
 // @author       -MM-
 // @match        https://*.hentaiheroes.com/labyrinth.html*
@@ -177,7 +177,7 @@
             function applyPopupMods(node)
             {
                 const nodeRewardsScrollable = node.querySelector('#reward_holder .rewards_scrollable');
-                if(nodeRewardsScrollable !== null && node.querySelector('#reward_holder .rewards_scrollable a') === null) {
+                if(nodeRewardsScrollable !== null && node.querySelector('#reward_holder .rewards_scrollable a') === null && node.querySelector('#reward_holder .rewards_scrollable p') !== null) {
                     const nutakuSessionId = getSessionId();
                     nodeRewardsScrollable.innerHTML += '<a style="position: absolute; right: 130px; top: 1rem; color: white;" href="/edit-labyrinth-team.html' + (nutakuSessionId !== null ? '?sess=' + nutakuSessionId : '') + '">Open Edit Team Page</a>';
 
