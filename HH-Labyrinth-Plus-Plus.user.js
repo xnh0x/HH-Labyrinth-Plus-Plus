@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         HH Labyrinth++
-// @version      0.10.0
+// @version      0.10.2
 // @description  Upgrade Labyrinth with various features
 // @author       -MM-, xnh0x
 // @match        https://*.hentaiheroes.com/labyrinth.html*
@@ -61,8 +61,8 @@
 // @match        https://*.hornyheroes.com/edit-world-boss-team.html*
 // @run-at       document-body
 // @namespace    https://github.com/xnh0x/HH-Labyrinth-Plus-Plus
-// @updateURL    https://github.com/xnh0x/HH-Labyrinth-Plus-Plus/raw/main/HH-Labyrinth-Plus-Plus.user.js
-// @downloadURL  https://github.com/xnh0x/HH-Labyrinth-Plus-Plus/raw/main/HH-Labyrinth-Plus-Plus.user.js
+// @updateURL    https://github.com/HH-GAME-MM/HH-Labyrinth-Plus-Plus/raw/main/HH-Labyrinth-Plus-Plus.user.js
+// @downloadURL  https://github.com/HH-GAME-MM/HH-Labyrinth-Plus-Plus/raw/main/HH-Labyrinth-Plus-Plus.user.js
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=hentaiheroes.com
 // @grant        GM_info
 // @grant        unsafeWindow
